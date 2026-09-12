@@ -15,11 +15,8 @@ jobs:
       - name: 安装 ossutil
         run: |
           set -e
-          # 从阿里云官方 GitHub release 下载（比 cdn 直链稳定）
-          curl -fL -o ossutil.zip https://github.com/aliyun/ossutil/releases/download/v2.1.1/ossutil-2.1.1-linux-amd64.zip
-          unzip -o ossutil.zip
-          sudo mv ossutil-2.1.1-linux-amd64/ossutil /usr/local/bin/ossutil
-          chmod +x /usr/local/bin/ossutil
+          # 官方推荐安装脚本，自动下载最新稳定版到 /usr/bin/ossutil
+          curl -fsSL https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
           ossutil version
 
       - name: 同步到 OSS
