@@ -14,16 +14,26 @@ jobs:
 
       - name: 安装 ossutil
         run: |
-          curl -o ossutil https://gosspublic.alicdn.com/ossutil/1.7.19/ossutil64
-          chmod +x ossutil
+          set -e
+          # 从阿里云官方 GitHub release 下载（比 cdn 直链稳定）
+          curl -fL -o ossutil.zip https://github.com/aliyun/ossutil/releases/download/v2.1.1/ossutil-2.1.1-linux-amd64.zip
+          unzip -o ossutil.zip
+          sudo mv ossutil-2.1.1-linux-amd64/ossutil /usr/local/bin/ossutil
+          chmod +x /usr/local/bin/ossutil
+          ossutil version
 
       - name: 同步到 OSS
         env:
           OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
           OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
         run: |
-          ./ossutil config -e oss-cn-hongkong.aliyuncs.com -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET"
-          ./ossutil sync ./ oss://cloudspace-hk1/ --delete -f \
+          set -e
+          ossutil sync ./ oss://cloudspace-hk1/ \
+            --region cn-hongkong \
+            --access-key-id "$OSS_ACCESS_KEY_ID" \
+            --access-key-secret "$OSS_ACCESS_KEY_SECRET" \
+            --delete \
+            --force \
             --exclude ".git/*" \
             --exclude ".github/*" \
             --exclude "*.md"
