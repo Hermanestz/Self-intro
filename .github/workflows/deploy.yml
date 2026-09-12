@@ -15,9 +15,7 @@ jobs:
       - name: 安装 ossutil
         run: |
           set -e
-          # 官方推荐安装脚本，自动下载最新稳定版到 /usr/bin/ossutil
           curl -fsSL https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
-          ossutil version
 
       - name: 同步到 OSS
         env:
@@ -25,12 +23,13 @@ jobs:
           OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
         run: |
           set -e
-          ossutil sync ./ oss://cloudspace-hk1/ \
-            --region cn-hongkong \
-            --access-key-id "$OSS_ACCESS_KEY_ID" \
-            --access-key-secret "$OSS_ACCESS_KEY_SECRET" \
-            --delete \
-            --force \
+          # v1 语法：先配置 endpoint + AK/SK
+          ossutil config -e oss-cn-hongkong.aliyuncs.com \
+            -i "$OSS_ACCESS_KEY_ID" \
+            -k "$OSS_ACCESS_KEY_SECRET"
+          # v1 用 cp -r 递归同步，--delete 删除远端多余文件，-f 免确认
+          ossutil cp -r ./ oss://cloudspace-hk1/ \
+            --delete -f \
             --exclude ".git/*" \
             --exclude ".github/*" \
             --exclude "*.md"
