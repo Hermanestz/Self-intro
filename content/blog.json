@@ -1,0 +1,13 @@
+{
+  "articles": [
+    {
+      "slug": "blog-ready",
+      "title": "技术博客，准备就绪",
+      "summary": "这是一篇可替换的示例文章，也是一份最短发布指南：用 Markdown 写作，或从 Notion 同步后展示。",
+      "date": "2026-09-14",
+      "source": "markdown",
+      "contentPath": "/content/posts/blog-ready.md",
+      "published": true
+    }
+  ]
+}
